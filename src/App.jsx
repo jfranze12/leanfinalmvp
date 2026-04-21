@@ -564,8 +564,8 @@ export default function App() {
                 </Card>
                 <Card className="border-white/10 bg-white/5">
                   <CardContent className="p-4">
-                    <div className="text-sm text-neutral-300">Source sheets</div>
-                    <div className="mt-1 text-2xl font-semibold">{appState.datasets.length}</div>
+                    <div className="text-sm text-neutral-300">Predicted exercises</div>
+                    <div className="mt-1 text-2xl font-semibold">{appState.predictions.length}</div>
                   </CardContent>
                 </Card>
                 <Card className="col-span-2 border-white/10 bg-white/5">
