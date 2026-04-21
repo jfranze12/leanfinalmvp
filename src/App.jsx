@@ -97,6 +97,35 @@ function summarizeQuarterlyDemand(shopStock, quarter) {
     .slice(0, 5)
 }
 
+function samplePredictionLines(lines, count = 20, poolSize = 100) {
+  const pool = lines.slice(0, Math.min(poolSize, lines.length)).map((line) => ({ ...line }))
+
+  const selected = []
+  while (selected.length < count && pool.length > 0) {
+    const totalWeight = pool.reduce(
+      (sum, line) => sum + Math.max(1, line.predictedQty) * Math.max(0.1, line.keepProbability || 0.1),
+      0
+    )
+
+    let roll = Math.random() * totalWeight
+    let chosenIndex = 0
+
+    for (let index = 0; index < pool.length; index += 1) {
+      const weight = Math.max(1, pool[index].predictedQty) * Math.max(0.1, pool[index].keepProbability || 0.1)
+      roll -= weight
+      if (roll <= 0) {
+        chosenIndex = index
+        break
+      }
+    }
+
+    selected.push(pool[chosenIndex])
+    pool.splice(chosenIndex, 1)
+  }
+
+  return selected.sort((a, b) => b.predictedQty - a.predictedQty)
+}
+
 export default function App() {
   const [appState, setAppState] = useState(() => loadState(SEED_STATE))
   const [activeDialog, setActiveDialog] = useState(null)
@@ -258,8 +287,10 @@ export default function App() {
       summary: output.summary,
     })
     setDraftPrediction(output)
-    setEditablePredictionRows(output.lines.slice(0, 20).map((line) => ({ ...line })))
-    setManualResults(output.lines.slice(0, 15).map((line) => ({
+    const sampledLines = samplePredictionLines(output.lines, 20, 60)
+
+    setEditablePredictionRows(sampledLines.map((line) => ({ ...line })))
+    setManualResults(sampledLines.slice(0, 15).map((line) => ({
       material: line.material,
       description: line.description,
       actualQty: line.predictedQty,
