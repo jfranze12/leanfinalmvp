@@ -345,7 +345,7 @@ export default function App() {
               <div>
                 <h1 className="text-3xl font-semibold tracking-tight">Stryker Vehicles Predictive Tool</h1>
                 <p className="mt-1 text-sm text-neutral-300">
-                  Front-end MVP demo using vehicle-only example data, local persistence, and a Bayesian demand model.
+                  MVP using vehicle-only example data, simulated quarterly data, and a Bayesian demand model.
                 </p>
               </div>
             </div>
@@ -391,7 +391,7 @@ export default function App() {
                   <h2 className="text-xl font-semibold text-neutral-100">Main Actions</h2>
                   <p className="mt-1 text-sm text-neutral-300">Create a training event, review model output, log actual usage, and compare human vs algorithm performance.</p>
                 </div>
-                <Badge variant="secondary" className="bg-white/10 text-white">Vercel-ready demo</Badge>
+                <Badge variant="secondary" className="bg-white/10 text-white">MVP Build</Badge>
               </div>
 
               <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -548,7 +548,6 @@ export default function App() {
           <Card className="border-white/10 bg-white/5">
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold text-neutral-100">Algorithm & Data Health</h2>
-              <p className="mt-1 text-sm text-neutral-300">All local and browser-persisted for a clean Vercel demo without backend dependencies.</p>
 
               <div className="mt-5 rounded-2xl border border-white/10 p-4">
                 <div className="text-sm text-neutral-300">Model status</div>
@@ -613,7 +612,7 @@ export default function App() {
           </Button>
           <Button className="rounded-2xl bg-white/10 text-white hover:bg-white/15 shadow-lg" onClick={() => setActiveDialog('delete')}>
             <Trash2 className="mr-2 h-4 w-4" />
-            Reset Demo
+            Reset 
           </Button>
         </div>
 
@@ -776,7 +775,7 @@ export default function App() {
             <DialogHeader>
               <DialogTitle className="text-white">Download Updated Shop Stock Order Points?</DialogTitle>
               <DialogDescription className="text-neutral-300">
-                The shop stock listing has been updated locally for the demo. Download now or leave it updated in the browser state.
+                The shop stock listing has been updated locally. Download now or leave it updated.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -858,7 +857,7 @@ export default function App() {
                   <Label className="text-neutral-200">Upload results spreadsheet</Label>
                   <Input type="file" accept=".xlsx,.xls,.csv" className="mt-2 rounded-xl border-white/10 bg-white/5" onChange={(event) => setResultsSheetName(event.target.files?.[0]?.name ?? '')} />
                   <div className="mt-3 text-xs text-neutral-400">{resultsSheetName || 'No spreadsheet selected'}</div>
-                  <p className="mt-3 text-xs text-neutral-400">For the demo, the manual fields are the working path. Spreadsheet upload is left in place to show the intended workflow.</p>
+                  <p className="mt-3 text-xs text-neutral-400">For the current MVP, the manual fields are the working path. Spreadsheet upload is left in place to show the intended workflow.</p>
                 </div>
               </TabsContent>
             </Tabs>
@@ -875,7 +874,7 @@ export default function App() {
             <DialogHeader>
               <DialogTitle className="text-white">Algorithm Results</DialogTitle>
               <DialogDescription className="text-neutral-300">
-                Bayesian model output, human-adjusted output, and actual outcomes are scored separately so the demo can show how the model learns.
+                Bayesian model output, human-adjusted output, and actual outcomes are scored separately so the MVP can show how the model learns.
               </DialogDescription>
             </DialogHeader>
 
@@ -987,7 +986,7 @@ export default function App() {
           <DialogContent className="rounded-2xl border-white/10 bg-[#111111] text-white sm:max-w-4xl">
             <DialogHeader>
               <DialogTitle className="text-white">View Dataset</DialogTitle>
-              <DialogDescription className="text-neutral-300">Seeded example files and any locally uploaded spreadsheets used by the demo.</DialogDescription>
+              <DialogDescription className="text-neutral-300">Seeded example files and any locally uploaded spreadsheets used by the MVP.</DialogDescription>
             </DialogHeader>
             <Input
               value={viewDatasetSearch}
@@ -1033,11 +1032,11 @@ export default function App() {
         <Dialog open={activeDialog === 'delete'} onOpenChange={(open) => setActiveDialog(open ? 'delete' : null)}>
           <DialogContent className="rounded-2xl border-white/10 bg-[#111111] text-white sm:max-w-xl">
             <DialogHeader>
-              <DialogTitle className="text-white">Reset Demo State</DialogTitle>
+              <DialogTitle className="text-white">Reset MVP State</DialogTitle>
               <DialogDescription className="text-neutral-300">This clears browser-stored predictions, results, and uploaded merges, then returns to the seeded example data.</DialogDescription>
             </DialogHeader>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-neutral-300">
-              This is a front-end-only demo reset. It does not affect any backend or external system because there is no backend in this build.
+              This is a front-end-only MVP reset. It does not affect any backend or external system because there is no backend in this build.
             </div>
             <DialogFooter>
               <Button className="rounded-2xl bg-white/10 text-white hover:bg-white/15" variant="secondary" onClick={() => setActiveDialog(null)}>Cancel</Button>
