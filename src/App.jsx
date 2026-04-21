@@ -508,16 +508,10 @@ export default function App() {
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <h3 className="text-lg font-semibold text-neutral-100">Quarterly Planning</h3>
-                        <p className="mt-1 text-sm text-neutral-300">Top historical demand signals for the selected quarter.</p>
+                        <p className="mt-1 text-sm text-neutral-300">Select a quarter to view matching historical demand anchors.</p>
                       </div>
                       <CalendarRange className="h-5 w-5 text-neutral-300" />
                     </div>
-                    <Select value={selectedQuarter} onValueChange={setSelectedQuarter}>
-                      <div className="mt-4">
-                        <TabsList className="hidden" />
-                        <SelectContent />
-                      </div>
-                    </Select>
                     <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                       {quarterOptions.map((quarter) => (
                         <button
@@ -525,8 +519,11 @@ export default function App() {
                           className={`rounded-2xl border p-3 text-left ${selectedQuarter === quarter ? 'border-white bg-white/10' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
                           onClick={() => setSelectedQuarter(quarter)}
                         >
-                          <div className="text-sm font-medium">{quarter}</div>
-                          <div className="mt-1 text-xs text-neutral-400">View same-quarter demand anchors</div>
+                          <div className="text-xl font-semibold leading-tight">
+                            {quarter.split(' ')[0]}
+                            <br />
+                            {quarter.split(' ')[1]}
+                          </div>
                         </button>
                       ))}
                     </div>
@@ -731,8 +728,8 @@ export default function App() {
                         <TableRow className="border-white/10">
                           <TableHead className="text-neutral-300">Material</TableHead>
                           <TableHead className="text-neutral-300">Description</TableHead>
-                          <TableHead className="text-neutral-300 text-right">Pred Qty</TableHead>
-                          <TableHead className="text-neutral-300 text-right">Rec. ROP</TableHead>
+                          <TableHead className="min-w-[120px] text-right text-neutral-300">Pred Qty</TableHead>
+                          <TableHead className="min-w-[120px] text-right text-neutral-300">Rec. ROP</TableHead>
                           <TableHead className="text-neutral-300 text-right">Keep %</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -746,7 +743,7 @@ export default function App() {
                                 type="number"
                                 value={row.predictedQty}
                                 onChange={(event) => setEditablePredictionRows((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, predictedQty: Number(event.target.value) } : item))}
-                                className="ml-auto w-28 rounded-xl border-white/10 bg-white/5 text-right tabular-nums"
+                                className="ml-auto w-36 rounded-xl border-white/10 bg-white/5 pr-3 text-right tabular-nums"
                               />
                             </TableCell>
                             <TableCell className="text-right">
@@ -754,7 +751,7 @@ export default function App() {
                                 type="number"
                                 value={row.recommendedReorderPoint}
                                 onChange={(event) => setEditablePredictionRows((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, recommendedReorderPoint: Number(event.target.value) } : item))}
-                                className="ml-auto w-28 rounded-xl border-white/10 bg-white/5 text-right tabular-nums"
+                                className="ml-auto w-36 rounded-xl border-white/10 bg-white/5 pr-3 text-right tabular-nums"
                               />
                             </TableCell>
                             <TableCell className="text-right text-neutral-100">{Math.round(row.keepProbability * 100)}%</TableCell>
