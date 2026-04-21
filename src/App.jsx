@@ -13,8 +13,6 @@ import {
   Package,
   CalendarRange,
   AlertTriangle,
-  CheckCircle2,
-  Brain,
   ChevronDown,
   Database,
   MapPinned,
@@ -29,7 +27,6 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogD
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Progress } from '@/components/ui/progress'
 import { Select, SelectContent, SelectItem } from '@/components/ui/select'
 import { seedShopStock, sourceCatalog, uics, locations } from '@/data/seedData'
 import { loadState, saveState, resetState } from '@/lib/storage'
@@ -373,17 +370,13 @@ export default function App() {
 
             <Card className="border-white/10 bg-white/5">
               <CardContent className="p-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-neutral-300">Model snapshot</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-neutral-300">Current quarter</div>
                 <div className="mt-2 flex items-center justify-between gap-3">
                   <div>
-                    <div className="text-2xl font-semibold">{appState.shopStock.length} lines</div>
-                    <div className="mt-1 text-sm text-neutral-400">Vehicle-only shop stock lines modeled for quarterly forecasting.</div>
+                    <div className="text-2xl font-semibold">{selectedQuarter}</div>
+                    <div className="mt-1 text-sm text-neutral-400">Planning is weighted by previous quarter and the previous matching quarter.</div>
                   </div>
-                  <Brain className="h-5 w-5 text-neutral-300" />
-                </div>
-                <div className="mt-4 flex items-center gap-2 text-xs text-neutral-300">
-                  <CheckCircle2 className="h-4 w-4" />
-                  Bayesian posterior + human-vs-algorithm learning
+                  <CalendarRange className="h-5 w-5 text-neutral-300" />
                 </div>
               </CardContent>
             </Card>
@@ -561,12 +554,9 @@ export default function App() {
               <p className="mt-1 text-sm text-neutral-300">All local and browser-persisted for a clean Vercel demo without backend dependencies.</p>
 
               <div className="mt-5 rounded-2xl border border-white/10 p-4">
-                <div className="text-sm text-neutral-300">Human win rate</div>
-                <div className="mt-1 text-3xl font-semibold">{metrics.humanWinRate}%</div>
-                <div className="mt-4">
-                  <Progress value={metrics.humanWinRate} className="h-2" />
-                </div>
-                <div className="mt-2 text-xs text-neutral-400">Calculated after actual results are entered. The model learns from whichever side performs better.</div>
+                <div className="text-sm text-neutral-300">Model status</div>
+                <div className="mt-2 text-base font-medium text-white">Bayesian demo model ready</div>
+                <div className="mt-2 text-xs text-neutral-400">Algorithm error and human error are shown only inside Algorithm Results after actual outcomes are entered.</div>
               </div>
 
               <div className="mt-6 grid grid-cols-2 gap-3">
@@ -582,16 +572,10 @@ export default function App() {
                     <div className="mt-1 text-2xl font-semibold">{appState.datasets.length}</div>
                   </CardContent>
                 </Card>
-                <Card className="border-white/10 bg-white/5">
+                <Card className="col-span-2 border-white/10 bg-white/5">
                   <CardContent className="p-4">
-                    <div className="text-sm text-neutral-300">Algorithm MAE</div>
-                    <div className="mt-1 text-2xl font-semibold">{metrics.algorithmMae || '—'}</div>
-                  </CardContent>
-                </Card>
-                <Card className="border-white/10 bg-white/5">
-                  <CardContent className="p-4">
-                    <div className="text-sm text-neutral-300">Human MAE</div>
-                    <div className="mt-1 text-2xl font-semibold">{metrics.humanMae || '—'}</div>
+                    <div className="text-sm text-neutral-300">Tracked shop stock lines</div>
+                    <div className="mt-1 text-2xl font-semibold">{appState.shopStock.length}</div>
                   </CardContent>
                 </Card>
               </div>
@@ -655,9 +639,9 @@ export default function App() {
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div>
                     <Label className="text-neutral-200">Location</Label>
-                    <select value={eventLocationId} onChange={(event) => setEventLocationId(event.target.value)} className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm">
+                    <select value={eventLocationId} onChange={(event) => setEventLocationId(event.target.value)} className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                       {locations.map((location) => (
-                        <option key={location.id} value={location.id}>{location.name}</option>
+                        <option key={location.id} value={location.id} className="bg-white text-black">{location.name}</option>
                       ))}
                     </select>
                   </div>
@@ -762,7 +746,7 @@ export default function App() {
                                 type="number"
                                 value={row.predictedQty}
                                 onChange={(event) => setEditablePredictionRows((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, predictedQty: Number(event.target.value) } : item))}
-                                className="ml-auto w-24 rounded-xl border-white/10 bg-white/5 text-right"
+                                className="ml-auto w-28 rounded-xl border-white/10 bg-white/5 text-right tabular-nums"
                               />
                             </TableCell>
                             <TableCell className="text-right">
@@ -770,7 +754,7 @@ export default function App() {
                                 type="number"
                                 value={row.recommendedReorderPoint}
                                 onChange={(event) => setEditablePredictionRows((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, recommendedReorderPoint: Number(event.target.value) } : item))}
-                                className="ml-auto w-24 rounded-xl border-white/10 bg-white/5 text-right"
+                                className="ml-auto w-28 rounded-xl border-white/10 bg-white/5 text-right tabular-nums"
                               />
                             </TableCell>
                             <TableCell className="text-right text-neutral-100">{Math.round(row.keepProbability * 100)}%</TableCell>
@@ -824,10 +808,10 @@ export default function App() {
 
             <div>
               <Label className="text-neutral-200">Select predicted exercise</Label>
-              <select className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm" value={selectedPredId} onChange={(event) => setSelectedPredId(event.target.value)}>
+              <select className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white" value={selectedPredId} onChange={(event) => setSelectedPredId(event.target.value)}>
                 <option value="">— Select —</option>
                 {appState.predictions.map((prediction) => (
-                  <option key={prediction.id} value={prediction.id}>
+                  <option key={prediction.id} value={prediction.id} className="bg-white text-black">
                     {prediction.event.locationName} · {prediction.event.startDate} · {prediction.event.vehicleCount} vehicles
                   </option>
                 ))}
@@ -861,7 +845,7 @@ export default function App() {
                                 type="number"
                                 value={row.actualQty}
                                 onChange={(event) => setManualResults((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, actualQty: Number(event.target.value) } : item))}
-                                className="ml-auto w-24 rounded-xl border-white/10 bg-white/5 text-right"
+                                className="ml-auto w-28 rounded-xl border-white/10 bg-white/5 text-right tabular-nums"
                               />
                             </TableCell>
                           </TableRow>
